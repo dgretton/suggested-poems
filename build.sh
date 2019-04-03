@@ -1,3 +1,3 @@
 #!/bin/bash
 
-zip -r suggested-poems.zip src
+zip -r profound-suggestions.zip src

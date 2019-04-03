@@ -1,3 +1,5 @@
+var retrieved_sentences = '';
+
 function insertTextAtCursor(text) {
     // https://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
 
@@ -105,30 +107,6 @@ function keepTrying(func, time) {
     }
 }
 
-function composeMarkov(seedText) {
-    // http://www.rangakrish.com/downloads/RiTa-Generation.js
-    let sentences = ritaMarkovGenerator.generateSentences(3);
-
-    return sentences;
-}
-
-function composeHaiku(seedText) {
-    let lexicon = new RiLexicon();
-
-    // https://creative-coding.decontextualize.com/intro-to-ritajs/
-    let firstLine  = "the " + 
-        lexicon.randomWord("jj", 2) + " " +
-        lexicon.randomWord("nn", 2);
-    let secondLine = lexicon.randomWord("vbg", 2) +
-        " in the " +
-        lexicon.randomWord("jj", 2) + " " +
-        lexicon.randomWord("nn", 1);
-    let thirdLine = "I " +
-        lexicon.randomWord("vbd", 2) + " " + 
-        lexicon.randomWord("rb", 2);
-
-    return [firstLine, secondLine, thirdLine];
-}
 
 function getText(textEls) {
     let text = '';
@@ -166,6 +144,20 @@ function getMessageText(messageEl) {
     return lines.filter(line => line.length > 10).join('\n');
 }
 
+function getmsgs() {
+    $.getJSON('https://dgretton.pythonanywhere.com/thatthatis/', 
+        function(data, textStatus, jqXHR) {
+            let starting = retrieved_sentences == '';
+            retrieved_sentences = data;
+            //alert(retrieved_sentences);
+            if (starting) {
+                keepTrying(init,1000);
+            }
+        }
+    )
+    return false;
+}
+
 function init() {
     let messageEl = selectLastEl('[data-message-id]');
 
@@ -186,14 +178,11 @@ function init() {
         return false;
     }
 
-    let suggestions = composeMarkov(getMessageText(messageEl));
-
-    replaceSuggestions(messageEl,suggestions);
+    replaceSuggestions(messageEl, retrieved_sentences);
 
     return false;
 }
 
-let ritaMarkovGenerator = new RiMarkov(4);
-ritaMarkovGenerator.loadText(POETRY_CORPUS);
 
-keepTrying(init,1000);
+keepTrying(getmsgs,10000);
+

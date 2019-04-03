@@ -1,16 +1,15 @@
 {
   "manifest_version": 2,
-  "name": "Suggested poems for Gmail",
-  "description": "Replaces suggested replies on Gmail messages with poetic verse.",
-  "version": "0.5",
+  "name": "Profound Gmail response suggestions",
+  "description": "Replaces suggested replies on Gmail messages with random grammatical sentences using only \"that,\" \"is,\" \"it,\" and \"not.\"",
+  "version": "0.1",
   "content_scripts": [
     {
       "matches": [
         "https://mail.google.com/*"
       ],
       "js": [
-        "corpus.js",
-        "rita-full.min.js",
+        "jquery.min.js",
         "content.js"
       ],
       "css": [
